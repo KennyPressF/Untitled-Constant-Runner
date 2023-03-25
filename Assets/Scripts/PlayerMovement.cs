@@ -47,9 +47,9 @@ public class PlayerMovement : MonoBehaviour
 
         if (transform.position.x < -16)
         {
-            moveSpeed = 400;
+            moveSpeed = 600;
         }
-        if (transform.position.x > 16)
+        else if (transform.position.x > 16)
         {
             moveSpeed = -moveSpeed;
         }
@@ -66,16 +66,16 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
-            myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
-            //myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            //myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
+            myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
         }
 
         if (playerInputActions.Player.Jump.IsPressed())
         {
             if (jumpTimeCounter > 0 && isJumping)
             {
-                myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
-                //myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+                //myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
+                myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else
