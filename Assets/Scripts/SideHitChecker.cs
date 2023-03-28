@@ -19,7 +19,7 @@ public class SideHitChecker : MonoBehaviour
         playerMovement.ChangeDirection();
     }
 
-    private void ChangeColliderSide()
+    public void ChangeColliderSide()
     {
         wallColl.offset = new Vector2(-wallColl.offset.x, 0);
     }

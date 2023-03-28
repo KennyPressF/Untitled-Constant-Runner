@@ -15,27 +15,14 @@ public class PlayerJump : MonoBehaviour
 
     Rigidbody2D myRB;
     BoxCollider2D myColl;
-    PlayerInputActions playerInputActions;
-
-    private void Awake()
-    {
-        playerInputActions = new PlayerInputActions();
-    }
+    PlayerInputActions playerInput;
 
     private void Start()
     {
+        playerInput = InputActionSingleton.instance.playerInputActions;
+
         myRB = GetComponent<Rigidbody2D>();
         myColl = GetComponent<BoxCollider2D>();
-    }
-
-    private void OnEnable()
-    {
-        playerInputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerInputActions.Disable();
     }
 
     private void Update()
@@ -45,7 +32,7 @@ public class PlayerJump : MonoBehaviour
 
     private void Jump()
     {
-        if (playerInputActions.Player.Jump.WasPressedThisFrame() && IsGrounded())
+        if (playerInput.Player.Jump.WasPressedThisFrame() && IsGrounded())
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
@@ -53,7 +40,7 @@ public class PlayerJump : MonoBehaviour
             //myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
         }
 
-        if (playerInputActions.Player.Jump.IsPressed())
+        if (playerInput.Player.Jump.IsPressed())
         {
             if (jumpTimeCounter > 0 && isJumping)
             {
@@ -67,7 +54,7 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
-        if (playerInputActions.Player.Jump.WasReleasedThisFrame())
+        if (playerInput.Player.Jump.WasReleasedThisFrame())
         {
             isJumping = false;
         }

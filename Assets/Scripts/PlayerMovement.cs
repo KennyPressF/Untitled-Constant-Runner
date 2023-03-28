@@ -8,12 +8,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
 
     Rigidbody2D myRB;
-    
-    RaycastHit2D forwardHitRayCast;
+    PlayerInputActions playerInput;
+    SideHitChecker sideHitChecker;
 
     private void Start()
     {
+        playerInput = InputActionSingleton.instance.playerInputActions;
+
         myRB = GetComponent<Rigidbody2D>();
+        sideHitChecker = GetComponentInChildren<SideHitChecker>();
+    }
+
+    private void Update()
+    {
+        TurnAround();
     }
 
     private void FixedUpdate()
@@ -24,6 +32,15 @@ public class PlayerMovement : MonoBehaviour
     public void ChangeDirection()
     {
         moveSpeed = -moveSpeed;
+    }
+
+    private void TurnAround()
+    {
+        if(playerInput.Player.TurnAround.WasPressedThisFrame())
+        {
+            ChangeDirection();
+            sideHitChecker.ChangeColliderSide();
+        }
     }
 }
 
