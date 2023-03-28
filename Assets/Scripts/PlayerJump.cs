@@ -6,8 +6,9 @@ public class PlayerJump : MonoBehaviour
 {
     [SerializeField] float jumpForce;
     [SerializeField] float jumpTime;
-    bool isJumping = false;
     float jumpTimeCounter;
+    bool isJumping;
+    bool isGrounded;
 
     RaycastHit2D downHitRayCast;
     [SerializeField] float extraHeight;
@@ -15,6 +16,7 @@ public class PlayerJump : MonoBehaviour
 
     Rigidbody2D myRB;
     BoxCollider2D myColl;
+    PlayerVisuals playerVisuals;
     PlayerInputActions playerInput;
 
     private void Start()
@@ -23,21 +25,23 @@ public class PlayerJump : MonoBehaviour
 
         myRB = GetComponent<Rigidbody2D>();
         myColl = GetComponent<BoxCollider2D>();
+        playerVisuals = GetComponentInChildren<PlayerVisuals>();
     }
 
     private void Update()
     {
-        Jump();
+        CheckIfGrounded();
+        ProcessJump();
+        SetJumpAnimation();
     }
 
-    private void Jump()
+    private void ProcessJump()
     {
-        if (playerInput.Player.Jump.WasPressedThisFrame() && IsGrounded())
+        if (playerInput.Player.Jump.WasPressedThisFrame() && isGrounded)
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
             myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
-            //myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
         }
 
         if (playerInput.Player.Jump.IsPressed())
@@ -45,7 +49,6 @@ public class PlayerJump : MonoBehaviour
             if (jumpTimeCounter > 0 && isJumping)
             {
                 myRB.velocity = new Vector2(myRB.velocity.x, jumpForce);
-                //myRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 jumpTimeCounter -= Time.deltaTime;
             }
             else
@@ -62,17 +65,17 @@ public class PlayerJump : MonoBehaviour
         DrawBoxCastBounds();
     }
 
-    private bool IsGrounded()
+    private void CheckIfGrounded()
     {
         downHitRayCast = Physics2D.BoxCast(myColl.bounds.center, myColl.bounds.size, 0, Vector2.down, extraHeight, whatIsGround);
 
         if (downHitRayCast.collider != null)
         {
-            return true;
+            isGrounded = true;
         }
         else
         {
-            return false;
+            isGrounded= false;
         }
     }
 
@@ -81,5 +84,10 @@ public class PlayerJump : MonoBehaviour
         Debug.DrawRay(myColl.bounds.center + new Vector3(myColl.bounds.extents.x, 0), Vector2.down * (myColl.bounds.extents.y + extraHeight), Color.red);
         Debug.DrawRay(myColl.bounds.center - new Vector3(myColl.bounds.extents.x, 0), Vector2.down * (myColl.bounds.extents.y + extraHeight), Color.red);
         Debug.DrawRay(myColl.bounds.center - new Vector3(myColl.bounds.extents.x, myColl.bounds.extents.y + extraHeight), Vector2.right * (myColl.bounds.extents.x * 2), Color.red);
+    }
+
+    private void SetJumpAnimation()
+    {
+        playerVisuals.SetJumpAnimation(isGrounded);
     }
 }

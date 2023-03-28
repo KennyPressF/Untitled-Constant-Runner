@@ -8,12 +8,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
 
     Rigidbody2D myRB;
-    PlayerInputActions playerInput;
+    PlayerVisuals playerVisuals;
     SideHitChecker sideHitChecker;
+    PlayerInputActions playerInput;
 
     private void Start()
     {
         playerInput = InputActionSingleton.instance.playerInputActions;
+        playerVisuals = GetComponentInChildren<PlayerVisuals>();
 
         myRB = GetComponent<Rigidbody2D>();
         sideHitChecker = GetComponentInChildren<SideHitChecker>();
@@ -29,18 +31,21 @@ public class PlayerMovement : MonoBehaviour
         myRB.velocity = new Vector2(moveSpeed * Time.fixedDeltaTime, myRB.velocity.y);
     }
 
-    public void ChangeDirection()
-    {
-        moveSpeed = -moveSpeed;
-    }
-
     private void TurnAround()
     {
-        if(playerInput.Player.TurnAround.WasPressedThisFrame())
+        if (playerInput.Player.TurnAround.WasPressedThisFrame())
         {
             ChangeDirection();
             sideHitChecker.ChangeColliderSide();
         }
     }
+
+    public void ChangeDirection()
+    {
+        playerVisuals.FlipSprite();
+        moveSpeed = -moveSpeed;
+    }
+
+    
 }
 
