@@ -44,6 +44,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Restart Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""c1e36947-830d-46b9-877b-89a461a17168"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=1),Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -66,6 +75,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Turn Around"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21ef884c-aea7-4dec-a525-c1f82dd0accd"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -655,6 +675,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_TurnAround = m_Player.FindAction("Turn Around", throwIfNotFound: true);
+        m_Player_RestartRun = m_Player.FindAction("Restart Run", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -730,12 +751,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_TurnAround;
+    private readonly InputAction m_Player_RestartRun;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @TurnAround => m_Wrapper.m_Player_TurnAround;
+        public InputAction @RestartRun => m_Wrapper.m_Player_RestartRun;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -751,6 +774,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TurnAround.started += instance.OnTurnAround;
             @TurnAround.performed += instance.OnTurnAround;
             @TurnAround.canceled += instance.OnTurnAround;
+            @RestartRun.started += instance.OnRestartRun;
+            @RestartRun.performed += instance.OnRestartRun;
+            @RestartRun.canceled += instance.OnRestartRun;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -761,6 +787,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TurnAround.started -= instance.OnTurnAround;
             @TurnAround.performed -= instance.OnTurnAround;
             @TurnAround.canceled -= instance.OnTurnAround;
+            @RestartRun.started -= instance.OnRestartRun;
+            @RestartRun.performed -= instance.OnRestartRun;
+            @RestartRun.canceled -= instance.OnRestartRun;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -945,6 +974,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnJump(InputAction.CallbackContext context);
         void OnTurnAround(InputAction.CallbackContext context);
+        void OnRestartRun(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

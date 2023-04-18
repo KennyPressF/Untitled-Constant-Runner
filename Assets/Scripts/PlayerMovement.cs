@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
+    [SerializeField] int remainingTurns;
 
     Rigidbody2D myRB;
     PlayerVisuals playerVisuals;
@@ -35,7 +36,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (playerInput.Player.TurnAround.WasPressedThisFrame())
         {
+            if(remainingTurns <= 0)
+            {
+                //SOMETHING TO TELL PLAYER THERE ARE NO TURNS LEFT
+                return;
+            }
+
             ChangeDirection();
+            remainingTurns--;
             sideHitChecker.ChangeColliderSide();
         }
     }

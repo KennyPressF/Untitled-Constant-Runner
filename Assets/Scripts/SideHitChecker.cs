@@ -15,6 +15,10 @@ public class SideHitChecker : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.CompareTag("Checkpoint"))
+        {
+            return;
+        }
         ChangeColliderSide();
         playerMovement.ChangeDirection();
     }
